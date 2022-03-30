@@ -5,7 +5,7 @@
 
 #include "config.h"
 #include "module.h"
-#include "wifi.h"
+#include "wifi_conf.h"
 #include "ota.h"
 #include "mqtt.h"
 

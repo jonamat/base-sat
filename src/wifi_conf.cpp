@@ -4,7 +4,7 @@
 
 #include "config.h"
 #include "utils.h"
-#include "wifi.h"
+#include "wifi_conf.h"
 
 void InitWifi(){
   WiFi.mode(WIFI_STA);
