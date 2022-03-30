@@ -4,7 +4,6 @@
 #include <AsyncElegantOTA.h>
 
 #include "config.h"
-#include "module.h"
 #include "wifi_conf.h"
 #include "ota.h"
 #include "mqtt.h"
@@ -14,21 +13,19 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 AsyncElegantOtaClass ota;
 
-
 void setup(void)
 {
   Serial.begin(115200);
   while (!Serial)
     delay(500);
 
-  InitWifi();
-  InitOTA(ota, webServer);
-  InitMQTT(mqttClient);
-
+  init_wifi();
+  init_ota(&ota, &webServer);
+  init_mqtt(&mqttClient);
   webServer.begin();
 }
 
 void loop(void)
 {
-  MqttConnectionLoop(mqttClient);
+  mqtt_connection_task(&mqttClient);
 }

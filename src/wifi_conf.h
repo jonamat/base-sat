@@ -1,4 +1,4 @@
 #pragma once
 
 /* Init Wifi connection */
-void InitWifi();
+void init_wifi();
