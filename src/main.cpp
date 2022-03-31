@@ -23,9 +23,10 @@ void setup(void)
   init_ota(&ota, &webServer);
   init_mqtt(&mqttClient);
   webServer.begin();
+
+  xTaskCreate(mqtt_connection_task, "MQTT connection task", 2048, &mqttClient, TASK_LOW_PRIORITY, NULL);
 }
 
 void loop(void)
 {
-  mqtt_connection_task(&mqttClient);
 }

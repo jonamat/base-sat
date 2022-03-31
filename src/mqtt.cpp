@@ -11,9 +11,12 @@ void init_mqtt(PubSubClient *mqttClient)
   (*mqttClient).setServer(MQTT_SERVER, 1883);
 }
 
-void mqtt_connection_task(PubSubClient *mqttClient )
+void mqtt_connection_task(void *parameter)
 {
+  PubSubClient *mqttClient = (PubSubClient *)parameter;
 
+  while (true)
+  {
     if (!(*mqttClient).connected())
     {
       // TODO remove blocking code
@@ -35,5 +38,5 @@ void mqtt_connection_task(PubSubClient *mqttClient )
     }
 
     (*mqttClient).loop();
-  
+  }
 }

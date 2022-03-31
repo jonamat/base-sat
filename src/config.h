@@ -17,3 +17,7 @@ secrets.h template:
 #define RECONNECTION_TIME 1000
 #define HTTP_SERVER_PORT 80
 
+
+#define TASK_LOW_PRIORITY 1
+#define TASK_MEDIUM_PRIORITY 2
+#define TASK_HIGH_PRIORITY 3
