@@ -6,7 +6,7 @@
 #include "utils.h"
 #include "wifi_conf.h"
 
-void init_wifi(){
+void init_wifi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 

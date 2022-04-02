@@ -12,7 +12,7 @@ void log(const String msg)
     Serial.println(msg);
 
   if (mqttClient.connected())
-    mqttClient.publish(SAT_NAME "/events", msg.c_str());
+    mqttClient.publish(SYSTEM_NAME SAT_NAME "/events", msg.c_str());
 }
 
 void log(const char* msg)
@@ -21,6 +21,6 @@ void log(const char* msg)
     Serial.println(msg);
 
   if (mqttClient.connected())
-    mqttClient.publish(SAT_NAME "/events", msg);
+    mqttClient.publish(SYSTEM_NAME SAT_NAME "/events", msg);
 }
 

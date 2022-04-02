@@ -2,14 +2,13 @@
 
 #include <Arduino.h>
 
-class AbstractModuleBase
+class Module
 {
 public:
-  virtual void setup(String name, String topic) = 0;
-  virtual void loop() = 0;
-  virtual void onMessage(String payload) = 0;
+  virtual void setup() = 0;
+  virtual void startTask() = 0;
+  virtual void onCommand(String* payload) = 0;
 
   String name;
   String topic;
-  String state;
 };
