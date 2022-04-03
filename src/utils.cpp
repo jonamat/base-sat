@@ -1,12 +1,12 @@
 #include <Arduino.h>
 #include <PubSubClient.h>
 
-#include "config.h"
 #include "utils.h"
+#include "config.h"
 
 extern PubSubClient mqttClient;
 
-void log(const String msg)
+void log(String msg)
 {
   if (Serial)
     Serial.println(msg);
@@ -15,7 +15,7 @@ void log(const String msg)
     mqttClient.publish(SYSTEM_NAME SAT_NAME "/events", msg.c_str());
 }
 
-void log(const char* msg)
+void log(char* msg)
 {
   if (Serial)
     Serial.println(msg);
@@ -23,4 +23,3 @@ void log(const char* msg)
   if (mqttClient.connected())
     mqttClient.publish(SYSTEM_NAME SAT_NAME "/events", msg);
 }
-

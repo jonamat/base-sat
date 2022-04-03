@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <AsyncElegantOTA.h>
 
-#include "config.h"
 #include "ota.h"
+#include "config.h"
 
 unsigned long lastMsg = 0;
 char msg[MSG_BUFFER_SIZE];
