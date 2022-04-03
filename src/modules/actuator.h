@@ -3,31 +3,43 @@
 #include "../module.h"
 #include "../utils.h"
 
+enum class ST {
+    ST_L = LOW,
+    ST_H = HIGH,
+};
+
+extern PubSubClient mqttClient;
+
+/**
+ * @brief Actuator
+ * @details Provides a digital output on a pin.
+ * 
+ * @param name Name of the device.
+ * @param topic Root topic of the device.
+ * @param pin Pin to use.
+ * @param init_state Starting state from. Default is LOW.
+ * @param task_priority Priority of the task. Default is P_M (medium).
+ * 
+ * @note Available command payloads:
+ * "STATE" publish the current state of the device on /state
+ * "ON" set the state to HIGH
+ * "OFF" set the state to LOW
+ * 
+ */
 class Actuator : public Module
 {
 private:
     int pin;
-    STATE state;
-    PubSubClient* mqttClient;
+    ST state;
 
 public:
-    static void task(void* param) {
-        // Actuator* pThis = (Actuator*)param;
-
-        // while (true) {
-        //     Serial.println(pThis->state == STATE::STATE_HIGH ? "ON" : "OFF");
-        //     vTaskDelay(1000 / portTICK_PERIOD_MS);
-        // }
-    }
-
-    Actuator(String name, String topic, PubSubClient* mqttClient, int pin, STATE initState = STATE::STATE_LOW, TSK_PRT task_priority = TSK_PRT::P_M)
+    Actuator(String name, String topic, int pin, ST init_state = ST::ST_L, TSK_PRT task_priority = TSK_PRT::P_M)
     {
         this->name = name;
         this->topic = topic;
-        this->task_priority = task_priority;
-        this->mqttClient = mqttClient;
         this->pin = pin;
-        this->state = initState;
+        this->state = init_state;
+        this->task_priority = task_priority;
     }
 
     void setup()
@@ -37,33 +49,26 @@ public:
 
     void onCommand(String* payload)
     {
-        if ((*payload) == "ON" && this->state == STATE::STATE_LOW)
+        if ((*payload) == "ON" && this->state == ST::ST_L)
         {
             digitalWrite(this->pin, HIGH);
-            this->state = STATE::STATE_HIGH;
+            this->state = ST::ST_H;
         }
-        else if ((*payload) == "OFF" && this->state == STATE::STATE_HIGH)
+        else if ((*payload) == "OFF" && this->state == ST::ST_H)
         {
             digitalWrite(this->pin, LOW);
-            this->state = STATE::STATE_LOW;
+            this->state = ST::ST_L;
         }
         else if ((*payload) == "STATE")
         {
             String state_topic = this->topic + "/state";
-            (*this->mqttClient).publish(state_topic.c_str(), this->state == STATE::STATE_HIGH ? "ON" : "OFF");
+            mqttClient.publish(state_topic.c_str(), this->state == ST::ST_H ? "ON" : "OFF");
         }
     }
 
     BaseType_t start()
     {
-        // return xTaskCreate(
-        //     &Actuator::task,
-        //     this->name.c_str(),
-        //     2048,
-        //     this,
-        //     (UBaseType_t)this->task_priority,
-        //     NULL);
-
+        digitalWrite(this->pin, (int)this->state);
         return pdPASS;
     }
 };
