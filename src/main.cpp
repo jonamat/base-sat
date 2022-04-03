@@ -34,12 +34,21 @@ void setup(void)
 
   webServer.begin();
 
-  xTaskCreate(mqtt_connection_task, "MQTT connection task", 2048, &mqttClient, TASK_LOW_PRIORITY, NULL);
+  xTaskCreate(mqtt_connection_task, "MQTT connection task", 2048, &mqttClient, (UBaseType_t)TSK_PRT::P_H, NULL);
 
   for (int i = 0; i < modules.size(); ++i)
   {
     modules[i]->setup();
-    modules[i]->startTask();
+    BaseType_t status = modules[i]->start();
+
+    if (status == pdPASS)
+    {
+      log("Task: " + modules[i]->name + " started successfully");
+    }
+    else {
+      log("Unable to allocate enough memory for the task: " + modules[i]->name + ". Task creation failed");
+      log("Used " + String(ESP.getFreeHeap()) + " of " + String(ESP.getHeapSize()) + " bytes");
+    }
   }
 }
 

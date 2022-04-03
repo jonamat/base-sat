@@ -12,22 +12,22 @@ private:
 
 public:
     static void task(void* param) {
-        Actuator* pThis = (Actuator*)param;
+        // Actuator* pThis = (Actuator*)param;
 
-        while (true) {
-            Serial.println(pThis->state == STATE::STATE_HIGH ? "ON" : "OFF");
-            vTaskDelay(1000 / portTICK_PERIOD_MS);
-        }
+        // while (true) {
+        //     Serial.println(pThis->state == STATE::STATE_HIGH ? "ON" : "OFF");
+        //     vTaskDelay(1000 / portTICK_PERIOD_MS);
+        // }
     }
 
-    Actuator(String name, String topic, PubSubClient* mqttClient, int pin, STATE initState = STATE::STATE_LOW)
+    Actuator(String name, String topic, PubSubClient* mqttClient, int pin, STATE initState = STATE::STATE_LOW, TSK_PRT task_priority = TSK_PRT::P_M)
     {
         this->name = name;
         this->topic = topic;
-
+        this->task_priority = task_priority;
+        this->mqttClient = mqttClient;
         this->pin = pin;
         this->state = initState;
-        this->mqttClient = mqttClient;
     }
 
     void setup()
@@ -37,26 +37,33 @@ public:
 
     void onCommand(String* payload)
     {
-        if ((*payload) == "on" && this->state == STATE::STATE_LOW)
+        if ((*payload) == "ON" && this->state == STATE::STATE_LOW)
         {
             digitalWrite(this->pin, HIGH);
             this->state = STATE::STATE_HIGH;
         }
-        else if ((*payload) == "off" && this->state == STATE::STATE_HIGH)
+        else if ((*payload) == "OFF" && this->state == STATE::STATE_HIGH)
         {
             digitalWrite(this->pin, LOW);
             this->state = STATE::STATE_LOW;
         }
+        else if ((*payload) == "STATE")
+        {
+            String state_topic = this->topic + "/state";
+            (*this->mqttClient).publish(state_topic.c_str(), this->state == STATE::STATE_HIGH ? "ON" : "OFF");
+        }
     }
 
-    void startTask()
+    BaseType_t start()
     {
-        xTaskCreate(
-            &Actuator::task,
-            this->name.c_str(),
-            2048,
-            this,
-            TASK_HIGH_PRIORITY,
-            NULL);
+        // return xTaskCreate(
+        //     &Actuator::task,
+        //     this->name.c_str(),
+        //     2048,
+        //     this,
+        //     (UBaseType_t)this->task_priority,
+        //     NULL);
+
+        return pdPASS;
     }
 };
