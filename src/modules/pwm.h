@@ -27,43 +27,52 @@ extern PubSubClient mqttClient;
 class PWM : public Module
 {
 private:
-    int pin;
-    int freq_hz;
-    uint8_t channel;
-    uint8_t state;
-    uint8_t duty_res;
+  int pin;
+  int freq_hz;
+  uint8_t channel;
+  uint8_t state;
+  uint8_t duty_res;
 
 public:
-    PWM(String name, String topic, int pin, uint8_t init_state = 0, uint8_t channel = 0, int freq_hz = 5000, uint8_t duty_res = 8, TSK_PRT task_priority = TSK_PRT::P_M) {
-        this->name = name;
-        this->topic = topic;
-        this->pin = pin;
-        this->state = init_state;
-        this->channel = channel;
-        this->freq_hz = freq_hz;
-        this->duty_res = duty_res;
-        this->task_priority = task_priority;
-    }
+  PWM(
+    String name,
+    String topic,
+    int pin,
+    uint8_t init_state = 0,
+    uint8_t channel = 0,
+    int freq_hz = 5000,
+    uint8_t duty_res = 8,
+    TSK_PRT task_priority = TSK_PRT::P_M
+  ) {
+    this->name = name;
+    this->topic = topic;
+    this->pin = pin;
+    this->state = init_state;
+    this->channel = channel;
+    this->freq_hz = freq_hz;
+    this->duty_res = duty_res;
+    this->task_priority = task_priority;
+  }
 
-    void setup() {
-        ledcSetup(this->channel, this->freq_hz, this->duty_res);
-        ledcAttachPin(this->pin, this->channel);
-    }
+  void setup() {
+    ledcSetup(this->channel, this->freq_hz, this->duty_res);
+    ledcAttachPin(this->pin, this->channel);
+  }
 
-    void onCommand(String* payload) {
-        if ((*payload) == "STATE") {
-            String state_topic = this->topic + "/state";
-            char c_state[4];
-            sprintf(c_state, "%d", this->state);
-            mqttClient.publish(state_topic.c_str(), c_state);
-        }
-        else {
-            ledcWrite(this->channel, (*payload).toInt());
-        }
+  void onCommand(String* payload) {
+    if ((*payload) == "STATE") {
+      String state_topic = this->topic + "/state";
+      char c_state[4];
+      sprintf(c_state, "%d", this->state);
+      mqttClient.publish(state_topic.c_str(), c_state);
     }
+    else {
+      ledcWrite(this->channel, (*payload).toInt());
+    }
+  }
 
-    BaseType_t start() {
-        ledcWrite(this->channel, this->state);
-        return pdPASS;
-    }
+  BaseType_t start() {
+    ledcWrite(this->channel, this->state);
+    return pdPASS;
+  }
 };

@@ -14,8 +14,7 @@ void init_wifi() {
   sprintf(buf, "Connecting to SSID  %s...", WIFI_SSID);
   log(buf);
 
-  while (WiFi.status() != WL_CONNECTED)
-  {
+  while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
 

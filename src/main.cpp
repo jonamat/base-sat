@@ -9,6 +9,7 @@
 #include "mqtt.h"
 #include "module.h"
 #include "modules/actuator.h"
+#include "modules/pwm.h"
 
 AsyncWebServer webServer(HTTP_SERVER_PORT);
 WiFiClient wifiClient;
@@ -17,11 +18,11 @@ AsyncElegantOtaClass ota;
 
 std::vector<Module*> modules = {
   // new Actuator("Led cabina", SYSTEM_NAME "/led_cabin", &mqttClient, 32),
-  new Actuator("Led attico", SYSTEM_NAME "/led_attic", &mqttClient, 33),
+  new Actuator("Led attico", SYSTEM_NAME "/led_attic", 33),
+  new PWM("Scaldasonno", SYSTEM_NAME "/scaldasonno", 22),
 };
 
-void setup(void)
-{
+void setup(void) {
   Serial.begin(115200);
   while (!Serial)
     delay(500);
@@ -36,13 +37,11 @@ void setup(void)
 
   xTaskCreate(mqtt_connection_task, "MQTT connection task", 2048, &mqttClient, (UBaseType_t)TSK_PRT::P_H, NULL);
 
-  for (int i = 0; i < modules.size(); ++i)
-  {
+  for (int i = 0; i < modules.size(); ++i) {
     modules[i]->setup();
     BaseType_t status = modules[i]->start();
 
-    if (status == pdPASS)
-    {
+    if (status == pdPASS) {
       log("Task: " + modules[i]->name + " started successfully");
     }
     else {
@@ -52,6 +51,5 @@ void setup(void)
   }
 }
 
-void loop(void)
-{
+void loop(void) {
 }

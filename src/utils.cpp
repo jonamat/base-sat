@@ -6,8 +6,7 @@
 
 extern PubSubClient mqttClient;
 
-void log(String msg)
-{
+void log(String msg) {
   if (Serial)
     Serial.println(msg);
 
@@ -15,8 +14,7 @@ void log(String msg)
     mqttClient.publish(SYSTEM_NAME SAT_NAME "/events", msg.c_str());
 }
 
-void log(char* msg)
-{
+void log(char* msg) {
   if (Serial)
     Serial.println(msg);
 
