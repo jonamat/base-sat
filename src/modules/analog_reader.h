@@ -11,55 +11,66 @@ enum class ST {
 extern PubSubClient mqttClient;
 
 /**
- * @brief DigitalReader
+ * @brief AnalogReader
  * @details Read the state of a digital pin and send the new state on change.
  *
  * @param name Name of the device.
  * @param topic Root topic of the device.
  * @param pin Pin to use.
  * @param delay Delay between each state check. Default is 1000ms.
+ * @param tolerance Tolerance to trigger a state change. Default is 10.
  * @param task_priority Priority of the task. Default is P_M (medium).
  *
  * @note Available commands:
  * "STATE" publish the current state of the device on /state
  *
  * @note Available events:
- * on topic "/events" with payload "[ON|OFF]" the state of the device has changed
+ * on topic "/events" with payload "[int]" the state of the device has changed
+ *
+ * TODO:
+ * - Add resolution
+ * - Add cycles
+ * - Add samples
  *
  */
-class DigitalReader : public Module
+class AnalogReader : public Module
 {
 private:
   int pin;
-  ST state;
+  int state;
+  int tolerance;
   uint delay;
 
 public:
-  DigitalReader(
+  AnalogReader(
     String name,
     String topic,
     int pin,
     uint delay = 1000,
+    int tolerance = 10,
     TSK_PRT task_priority = TSK_PRT::P_M
   ) {
     this->name = name;
     this->topic = topic;
     this->pin = pin;
     this->delay = delay;
+    this->tolerance = tolerance;
     this->task_priority = task_priority;
   }
 
   static void task(void* param) {
-    DigitalReader* pThis = (DigitalReader*)param;
+    AnalogReader* pThis = (AnalogReader*)param;
 
     while (true) {
-      int currentState = digitalRead(pThis->pin);
+      int currentState = analogRead(pThis->pin);
 
-      if ((ST)currentState != pThis->state) {
-        pThis->state = (ST)currentState;
+      if (currentState > pThis->state + pThis->tolerance || currentState < pThis->state - pThis->tolerance) {
+        pThis->state = currentState;
 
         String state_topic = pThis->topic + "/events";
-        mqttClient.publish(state_topic.c_str(), pThis->state == ST::ST_H ? "ON" : "OFF");
+        char c_state[4];
+        sprintf(c_state, "%d", pThis->state);
+        mqttClient.publish(state_topic.c_str(), c_state);
       }
 
       vTaskDelay(pThis->delay / portTICK_PERIOD_MS);
@@ -67,21 +78,22 @@ public:
   }
 
   void setup() {
-    pinMode(this->pin, OUTPUT);
   }
 
   void onCommand(String* payload) {
     if ((*payload) == "STATE") {
-      int currentState = digitalRead(this->pin);
+      int currentState = analogRead(this->pin);
 
       String state_topic = this->topic + "/state";
-      mqttClient.publish(state_topic.c_str(), this->state == ST::ST_H ? "ON" : "OFF");
+      char c_state[4];
+      sprintf(c_state, "%d", this->state);
+      mqttClient.publish(state_topic.c_str(), c_state);
     }
   }
 
   BaseType_t start() {
     return xTaskCreate(
-      &DigitalReader::task,
+      &AnalogReader::task,
       this->name.c_str(),
       2048,
       this,

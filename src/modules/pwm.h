@@ -19,7 +19,7 @@ extern PubSubClient mqttClient;
  * @param duty_res Duty resolution. Default is 8 bit.
  * @param task_priority Priority of the task. Default is P_M (medium).
  *
- * @note Available command payloads:
+ * @note Available commands:
  * "STATE" publish the current state of the device on /state
  * "[uint8_t]" set the state to [uint8_t]
  *

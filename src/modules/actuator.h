@@ -20,7 +20,7 @@ extern PubSubClient mqttClient;
  * @param init_state Starting state from. Default is LOW.
  * @param task_priority Priority of the task. Default is P_M (medium).
  *
- * @note Available command payloads:
+ * @note Available commands:
  * "STATE" publish the current state of the device on /state
  * "ON" set the state to HIGH
  * "OFF" set the state to LOW
