@@ -86,7 +86,7 @@ public:
 
       String state_topic = this->topic + "/state";
       char c_state[4];
-      sprintf(c_state, "%d", this->state);
+      sprintf(c_state, "%d", currentState);
       mqttClient.publish(state_topic.c_str(), c_state);
     }
   }

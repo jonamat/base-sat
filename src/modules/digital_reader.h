@@ -75,7 +75,7 @@ public:
       int currentState = digitalRead(this->pin);
 
       String state_topic = this->topic + "/state";
-      mqttClient.publish(state_topic.c_str(), this->state == ST::ST_H ? "ON" : "OFF");
+      mqttClient.publish(state_topic.c_str(), (ST)currentState == ST::ST_H ? "ON" : "OFF");
     }
   }
 
