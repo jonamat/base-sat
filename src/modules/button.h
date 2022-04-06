@@ -4,16 +4,6 @@
 #include "../module.h"
 #include "../utils.h"
 
-enum class ST {
-  ST_L = LOW,
-  ST_H = HIGH,
-};
-
-enum class MODE {
-  PULL_UP = INPUT_PULLUP,
-  PULL_DOWN = INPUT_PULLDOWN,
-};
-
 extern PubSubClient mqttClient;
 
 /**
@@ -69,8 +59,11 @@ public:
       if (pThis->button.read() != (int)pThis->state) {
         String state_topic = pThis->topic + "/events";
         mqttClient.publish(state_topic.c_str(), pThis->state == ST::ST_H ? "ON" : "OFF");
+
+        pThis->state = (ST)pThis->button.read();
       }
 
+      vTaskDelay(10 / portTICK_PERIOD_MS);
     }
   }
 
@@ -89,6 +82,8 @@ public:
   }
 
   BaseType_t start() {
+    this->state = (ST)this->button.read();
+
     return xTaskCreate(
       &Button::task,
       this->name.c_str(),
