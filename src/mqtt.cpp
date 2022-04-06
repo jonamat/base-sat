@@ -21,14 +21,14 @@ void mqtt_connection_task(void* parameter) {
 
         if ((*mqttClient).connect(clientId.c_str())) {
           char buf[255];
-          sprintf(buf, "%s connected to MQTT server %s on port %d as %s", SAT_NAME, MQTT_SERVER, MQTT_PORT, clientId);
+          sprintf(buf, "%s connected to MQTT server %s on port %d as %s", SAT_NAME, MQTT_SERVER, MQTT_PORT, clientId.c_str());
           log(buf);
 
           (*mqttClient).subscribe(SYSTEM_NAME "/#");
         }
         else {
           char buf[255];
-          sprintf(buf, "Cannot connect to MQTT broker. Status: %s. Retring", String((*mqttClient).state()));
+          sprintf(buf, "Cannot connect to MQTT broker. Status: %d. Retring", (*mqttClient).state());
           log(buf);
 
           vTaskDelay(RECONNECTION_TIME / portTICK_PERIOD_MS);

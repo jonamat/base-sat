@@ -18,8 +18,7 @@ void init_wifi() {
     delay(500);
   }
 
-  char buf[255];
-  sprintf(buf, "Connected to  %s. IP Address: ", WIFI_SSID, WiFi.localIP().toString());
+  sprintf(buf, "Connected to  %s. IP Address: ", WIFI_SSID, WiFi.localIP().toString().c_str());
   log(buf);
 }
 
