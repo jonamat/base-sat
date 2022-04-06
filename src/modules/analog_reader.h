@@ -3,11 +3,6 @@
 #include "../module.h"
 #include "../utils.h"
 
-enum class ST {
-  ST_L = LOW,
-  ST_H = HIGH,
-};
-
 extern PubSubClient mqttClient;
 
 /**

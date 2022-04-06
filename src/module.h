@@ -16,3 +16,13 @@ public:
   String topic;
   TSK_PRT task_priority;
 };
+
+enum class ST {
+  ST_L = LOW,
+  ST_H = HIGH,
+};
+
+enum class MODE {
+  PULL_UP = INPUT_PULLUP,
+  PULL_DOWN = INPUT_PULLDOWN,
+};
