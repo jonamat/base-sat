@@ -4,12 +4,31 @@
 
 #include "mqtt.h"
 #include "config.h"
-#include "utils.h"
-#include "module.h"
+#include "modules/module.h"
 
 void init_mqtt(PubSubClient* mqttClient) {
   (*mqttClient).setServer(MQTT_SERVER, 1883);
 };
+
+int last_heartbeat = 0;
+void heartbeat(PubSubClient* mqttClient) {
+  if (millis() - last_heartbeat > HEARTBEAT_DELAY) {
+    last_heartbeat = millis();
+
+    String heapTopic = "sats/" SAT_NAME "/heap";
+    (*mqttClient).publish(heapTopic.c_str(), String(ESP.getFreeHeap()).c_str());
+
+    String ipTopic = "sats/" SAT_NAME "/ip";
+    (*mqttClient).publish(ipTopic.c_str(), WiFi.localIP().toString().c_str());
+
+    String rssiTopic = "sats/" SAT_NAME "/rssi";
+    (*mqttClient).publish(rssiTopic.c_str(), String(WiFi.RSSI()).c_str());
+
+    String uptimeTopic = "sats/" SAT_NAME "/uptime";
+    (*mqttClient).publish(uptimeTopic.c_str(), String(millis()).c_str());
+  }
+}
+
 
 void mqtt_connection_task(void* parameter) {
   PubSubClient* mqttClient = (PubSubClient*)parameter;
@@ -22,19 +41,19 @@ void mqtt_connection_task(void* parameter) {
         if ((*mqttClient).connect(clientId.c_str())) {
           char buf[255];
           sprintf(buf, "%s connected to MQTT server %s on port %d as %s", SAT_NAME, MQTT_SERVER, MQTT_PORT, clientId.c_str());
-          log(buf);
 
-          (*mqttClient).subscribe(SYSTEM_NAME "/#");
+          (*mqttClient).subscribe("devs/#");
         }
         else {
           char buf[255];
           sprintf(buf, "Cannot connect to MQTT broker. Status: %d. Retring", (*mqttClient).state());
-          log(buf);
 
           vTaskDelay(RECONNECTION_TIME / portTICK_PERIOD_MS);
         }
       }
     }
+
+    heartbeat(mqttClient);
 
     (*mqttClient).loop();
   }
@@ -49,10 +68,10 @@ std::function<void(char*, uint8_t*, unsigned int)> mqtt_register_callbacks(PubSu
       }
 
       for (int i = 0; i < _modules.size(); ++i) {
-        if (strcmp(topic, _modules[i]->topic.c_str()) == 0) {
+        if (String(topic) == _modules[i]->topic + "/command") {
           _modules[i]->onCommand(&payload_str);
         }
       };
     };
-  };
+    };
 };
