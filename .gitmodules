@@ -1,0 +1,4 @@
+[submodule "modules"]
+	path = src/modules
+	url = git@github.com:jonamat/sat-modules.git
+	branch = submodule

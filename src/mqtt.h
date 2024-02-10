@@ -1,6 +1,7 @@
 #pragma once
 
-#include "module.h"
+#include "modules/module.h"
+#include <vector>
 
 /* Init MQTT client */
 void init_mqtt(PubSubClient* mqttClient);

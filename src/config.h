@@ -7,10 +7,9 @@ secrets.h template:
 */
 #include "../secrets.h"
 
-#define SYSTEM_NAME "camperA123"
-#define SAT_NAME "ganymede"
+#define SAT_NAME "satellite-1"
 
-#define MQTT_SERVER "broker.hivemq.com"
+#define MQTT_SERVER "test.mosquitto.org"
 #define MQTT_PORT 1883
 #define MQTT_DEFAULT_QOS 0
 
@@ -18,9 +17,7 @@ secrets.h template:
 #define RECONNECTION_TIME 1000
 #define HTTP_SERVER_PORT 80
 
-/* Task priority */
-enum class TSK_PRT {
-  P_L = 1,
-  P_M = 2,
-  P_H = 3,
-};
+#define LED_BUILTIN 2
+#define HEARTBEAT_DELAY 1000
+#define DEBUG true
+#define SERIAL_BAUD_RATE 115200
