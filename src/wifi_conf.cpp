@@ -4,7 +4,6 @@
 
 #include "wifi_conf.h"
 #include "config.h"
-#include "utils.h"
 
 void init_wifi() {
   WiFi.mode(WIFI_STA);
@@ -12,13 +11,11 @@ void init_wifi() {
 
   char buf[255];
   sprintf(buf, "Connecting to SSID  %s...", WIFI_SSID);
-  log(buf);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
 
   sprintf(buf, "Connected to  %s. IP Address: ", WIFI_SSID, WiFi.localIP().toString().c_str());
-  log(buf);
 }
 
