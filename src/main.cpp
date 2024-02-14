@@ -56,7 +56,9 @@ void setup(void) {
     BaseType_t status = modules[i]->start();
 
     if (status == pdPASS) {
-      printf("Task: %s started successfully", modules[i]->name.c_str());
+      char buf[255];
+      sprintf(buf, "Task %s started successfully", modules[i]->topic.c_str());
+      Serial.println(buf);
     }
     else {
 

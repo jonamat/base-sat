@@ -15,16 +15,16 @@ void heartbeat(PubSubClient* mqttClient) {
   if (millis() - last_heartbeat > HEARTBEAT_DELAY) {
     last_heartbeat = millis();
 
-    String heapTopic = "sats/" SAT_NAME "/heap";
+    String heapTopic = "sat/" SAT_NAME "/heap";
     (*mqttClient).publish(heapTopic.c_str(), String(ESP.getFreeHeap()).c_str());
 
-    String ipTopic = "sats/" SAT_NAME "/ip";
+    String ipTopic = "sat/" SAT_NAME "/ip";
     (*mqttClient).publish(ipTopic.c_str(), WiFi.localIP().toString().c_str());
 
-    String rssiTopic = "sats/" SAT_NAME "/rssi";
+    String rssiTopic = "sat/" SAT_NAME "/rssi";
     (*mqttClient).publish(rssiTopic.c_str(), String(WiFi.RSSI()).c_str());
 
-    String uptimeTopic = "sats/" SAT_NAME "/uptime";
+    String uptimeTopic = "sat/" SAT_NAME "/uptime";
     (*mqttClient).publish(uptimeTopic.c_str(), String(millis()).c_str());
   }
 }
@@ -41,12 +41,14 @@ void mqtt_connection_task(void* parameter) {
         if ((*mqttClient).connect(clientId.c_str())) {
           char buf[255];
           sprintf(buf, "%s connected to MQTT server %s on port %d as %s", SAT_NAME, MQTT_SERVER, MQTT_PORT, clientId.c_str());
+          Serial.println(buf);
 
-          (*mqttClient).subscribe("devs/#");
+          (*mqttClient).subscribe("dev/#");
         }
         else {
           char buf[255];
           sprintf(buf, "Cannot connect to MQTT broker. Status: %d. Retring", (*mqttClient).state());
+          Serial.println(buf);
 
           vTaskDelay(RECONNECTION_TIME / portTICK_PERIOD_MS);
         }
