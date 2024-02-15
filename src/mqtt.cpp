@@ -47,7 +47,7 @@ void mqtt_connection_task(void* parameter) {
         }
         else {
           char buf[255];
-          sprintf(buf, "Cannot connect to MQTT broker. Status: %d. Retring", (*mqttClient).state());
+          sprintf(buf, "Cannot connect to MQTT broker. Status: %d. Retrying", (*mqttClient).state());
           Serial.println(buf);
 
           vTaskDelay(RECONNECTION_TIME / portTICK_PERIOD_MS);
@@ -70,7 +70,7 @@ std::function<void(char*, uint8_t*, unsigned int)> mqtt_register_callbacks(PubSu
       }
 
       for (int i = 0; i < _modules.size(); ++i) {
-        if (String(topic) == _modules[i]->topic + "/command") {
+        if (String(topic) == _modules[i]->topic + COMMAND_SUBTOPIC) {
           _modules[i]->onCommand(&payload_str);
         }
       };
