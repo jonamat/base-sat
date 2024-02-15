@@ -41,7 +41,7 @@ git submodule update --init --recursive
 2. Fill the basic configuration in the config.cpp file.
 
 ```cpp
-#define SAT_NAME "satellite-1" // The name of the satellite
+#define SAT_NAME "satellite-1"
 #define MQTT_SERVER "test.mosquitto.org"
 ```
 
@@ -69,28 +69,45 @@ pio run -t upload
 
 Modules are the basic building blocks of the satellite. They control 1 (or multiple) GPIO pins. They can be sensors or actuators. Each module has some basic commands. By default, the command topic is the module topic with the suffix `/set`. The module sends a message to the command topic when the state changes.
 
+---
+
 ### DigitalInput
 
 Check the state of a digital input pin. It sends a message to the defined topic when the state changes.
 
 #### Commands
-`STATE` - Publish the current state of the input pin.
+
+| Command | Description                                 |
+| ------- | ------------------------------------------- |
+| STATE   | Publish the current state of the input pin. |
+
+---
 
 ### DigitalOutput
 
 Set the state of a digital output pin. It listens to the command topic and changes the state of the pin when a message is received. A new message is sent to the main topic when the state changes.
 
 #### Commands
-`STATE` - Publish the current state of the output pin.
-`ON` - Set the pin to HIGH.
-`OFF` - Set the pin to LOW.
+
+| Command | Description                                  |
+| ------- | -------------------------------------------- |
+| STATE   | Publish the current state of the output pin. |
+| ON      | Set the pin to HIGH.                         |
+| OFF     | Set the pin to LOW.                          |
+
+---
 
 ### AnalogReader
 
 Read the value of an analog pin. It sends a message to the defined topic when the value changes.
 
 #### Commands
-`STATE` - Publish the current value of the analog pin.
+
+| Command | Description                                  |
+| ------- | -------------------------------------------- |
+| STATE   | Publish the current value of the analog pin. |
+
+---
 
 ### AnalogOutputDAC
 
@@ -98,39 +115,67 @@ Read the value of an analog pin. It sends a message to the defined topic when th
 Set the value of an analog output pin using the integrated DAC. It listens to the command topic and changes the value of the pin when a message is received. A new message is sent to the main topic when the value changes.
 
 #### Commands
-`STATE` - Publish the current value of the output pin.
-`SET xxx` - Set the value of the output pin to xxx. The value must be between 0 and 255.
-`ON` - Set the pin to 255.
-`OFF` - Set the pin to 0.
+
+| Command | Description                                        |
+| ------- | -------------------------------------------------- |
+| STATE   | Publish the current value of the output pin.       |
+| SET xxx | Set the value of the output pin to xxx (0 to 255). |
+| ON      | Set the pin to 255.                                |
+| OFF     | Set the pin to 0.                                  |
+
+---
 
 ### PWM
+
 Set the value of an analog output pin using PWM. It listens to the command topic and changes the value of the pin when a message is received. A new message is sent to the main topic when the value changes.
 
 #### Commands
-`STATE` - Publish the current value of the output pin.
-`SET xxx` - Set the value of the output pin to xxx. The value must be between 0 and 255.
-`ON` - Set the pin to 255.
-`OFF` - Set the pin to 0.
+
+| Command | Description                                        |
+| ------- | -------------------------------------------------- |
+| STATE   | Publish the current value of the output pin.       |
+| SET xxx | Set the value of the output pin to xxx (0 to 255). |
+| ON      | Set the pin to 255.                                |
+| OFF     | Set the pin to 0.                                  |
+
+---
 
 ### IROutput
+
 Send IR signals using the IRremote library. It listens to the command topic and sends the IR signal when a message is received.
 
 #### Commands
-`KEY xxx` - Send the IR signal with the code xxx. Available codes are currently: `ON`, `OFF`, `1` to `8`, `PLUS`, `MINUS`
 
-### NTCThermistor
-! WIP
+| Command | Description                              |
+| ------- | ---------------------------------------- |
+| KEY xxx | Send the IR signal with the code xxx.    |
+|         | Available codes are currently:           |
+|         | `ON`, `OFF`, `1` to `8`, `PLUS`, `MINUS` |
+
+---
+
+### NTCThermistor 🚧
+
 Read the value of a thermistor and convert it to temperature. It sends a message to the defined topic when the value changes.
 
 #### Commands
-`STATE` - Publish the current value of the thermistor.
 
-### Button
-! WIP
-Check the state of a button. It sends a message to the defined topic when the state changes. It use the Bounce2 library to debounce the button.
+| Command | Description                                  |
+| ------- | -------------------------------------------- |
+| STATE   | Publish the current value of the thermistor. |
+
+---
+
+### Button 🚧
+
+Check the state of a button. It sends a message to the defined topic when the state changes. It uses the Bounce2 library to debounce the button.
 
 #### Commands
-`STATE` - Publish the current state of the button.
+
+| Command | Description                              |
+| ------- | ---------------------------------------- |
+| STATE   | Publish the current state of the button. |
+
 
 
 ## Licence
