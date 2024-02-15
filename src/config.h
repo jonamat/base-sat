@@ -1,10 +1,5 @@
 #pragma once
 
-/*
-secrets.h template:
-#define WIFI_SSID "ssid"
-#define WIFI_PASSWORD "passwd"
-*/
 #include "../secrets.h"
 
 #define SAT_NAME "satellite-1"
