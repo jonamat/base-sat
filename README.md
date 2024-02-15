@@ -12,6 +12,23 @@ It provides low level functionalities to develop IOT devices<br />
 - Extendable modules and easy to use
 - Parallel tasks and low level functionalities
 
+## Installation
+
+1. Install PlatformIO
+```bash
+pip install -U platformio
+```
+
+2. Clone the repository
+```bash
+git clone --recurse-submodules  git@github.com:jonamat/base-sat.git
+```
+
+If something gone wrong with the submodules in /src/modules, you can manually clone the submodules with the following commands:
+```bash
+git submodule update --init --recursive
+```
+
 ## Setup
 
 1. Rename the file secrets.template.h to secrets.h and fill it with your wifi and mqtt credentials.
