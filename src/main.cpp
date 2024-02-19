@@ -9,7 +9,6 @@
 #include "ota.h"
 #include "mqtt.h"
 #include "devices.h"
-// #include "core-modules/module.h"
 
 AsyncWebServer webServer(HTTP_SERVER_PORT);
 WiFiClient wifiClient;

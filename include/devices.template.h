@@ -1,14 +1,15 @@
 #pragma once
 #include <vector>
-#include "core-modules/module.h"
-#include "core-modules/modules/analog_output.h"
-#include "core-modules/modules/analog_reader.h"
-#include "core-modules/modules/button.h"
-#include "core-modules/modules/digital_input.h"
-#include "core-modules/modules/digital_output.h"
-#include "core-modules/modules/ir_output.h"
-#include "core-modules/modules/ntc_thermistor.h"
-#include "core-modules/modules/pwm.h"
+
+#include "module.h"
+#include "modules/analog_output.h"
+#include "modules/analog_input.h"
+#include "modules/button.h"
+#include "modules/digital_input.h"
+#include "modules/digital_output.h"
+#include "modules/ir_output.h"
+#include "modules/ntc_thermistor.h"
+#include "modules/pwm.h"
 
 /*
  * Customize the following definitions to match your setup
@@ -17,7 +18,7 @@
 
 std::vector<Module*> devices = {
   new AnalogOutputDAC("/lights", 33),
-  new AnalogReader("/sun-tracer", 34),
+  new AnalogInput("/sun-tracer", 34),
   new Button("/light-switch", 35),
   new DigitalInput("/door-sensor", 36),
   new DigitalOutput("/heater", 37),

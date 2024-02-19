@@ -21,21 +21,7 @@ pip install -U platformio
 
 2. Clone the repository
 ```bash
-git clone --recurse-submodules  git@github.com:jonamat/base-sat.git
-cd base-sat
-git remote add upstream git@github.com:jonamat/base-sat.git
-```
-
-If something gone wrong with the submodules and you don't see the `/src/modules` dir, you can manually clone the submodules with the following commands:
-```bash
-git submodule update --init --recursive
-```
-
-or, more manually (loosing the remote tracking)
-
-```bash
-cd include
-git clone -b submodule git@github.com:jonamat/sat-modules.git core-modules
+git clone git@github.com:jonamat/base-sat.git
 ```
 
 ## Update
@@ -43,8 +29,8 @@ git clone -b submodule git@github.com:jonamat/sat-modules.git core-modules
 The repo is designed to keep your configuration (include/config.h and include/devices.h) separated from the main code. You can update the repo without losing your configuration by pulling the latest changes from the repository. If you have made changes to the main code, you can stash them before pulling the changes and then apply them back.
 
 ```bash
-git stash # Stash your changes if you have made any in the main code
-git pull upstream master
+git stash # Stash your changes if you have made any in the main code (in src folder)
+git pull
 git stash apply # Apply your changes back
 ```
 
