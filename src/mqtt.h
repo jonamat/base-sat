@@ -1,6 +1,6 @@
 #pragma once
 
-#include "modules/module.h"
+#include "core-modules/module.h"
 #include <vector>
 
 /* Init MQTT client */

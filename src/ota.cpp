@@ -2,7 +2,7 @@
 #include <AsyncElegantOTA.h>
 
 #include "ota.h"
-#include "config.h"
+#include "const.h"
 
 unsigned long lastMsg = 0;
 char msg[MSG_BUFFER_SIZE];

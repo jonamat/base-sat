@@ -3,8 +3,9 @@
 #include <WiFi.h>
 
 #include "mqtt.h"
+#include "const.h"
 #include "config.h"
-#include "modules/module.h"
+#include "core-modules/module.h"
 
 void init_mqtt(PubSubClient* mqttClient) {
   (*mqttClient).setServer(MQTT_SERVER, 1883);

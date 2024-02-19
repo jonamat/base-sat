@@ -22,33 +22,59 @@ pip install -U platformio
 2. Clone the repository
 ```bash
 git clone --recurse-submodules  git@github.com:jonamat/base-sat.git
+cd base-sat
+git remote add upstream git@github.com:jonamat/base-sat.git
 ```
 
-If something gone wrong with the submodules in /src/modules, you can manually clone the submodules with the following commands:
+If something gone wrong with the submodules and you don't see the `/src/modules` dir, you can manually clone the submodules with the following commands:
 ```bash
 git submodule update --init --recursive
 ```
 
-## Setup
+or, more manually (loosing the remote tracking)
 
-1. Rename the file secrets.template.h to secrets.h and fill it with your wifi and mqtt credentials.
-
-```cpp
-#define WIFI_SSID "My wifi network"
-#define WIFI_PASSWORD "My-wifi-password123"
+```bash
+cd include
+git clone -b submodule git@github.com:jonamat/sat-modules.git core-modules
 ```
 
-2. Fill the basic configuration in the config.cpp file.
+## Update
+
+The repo is designed to keep your configuration (include/config.h and include/devices.h) separated from the main code. You can update the repo without losing your configuration by pulling the latest changes from the repository. If you have made changes to the main code, you can stash them before pulling the changes and then apply them back.
+
+```bash
+git stash # Stash your changes if you have made any in the main code
+git pull upstream master
+git stash apply # Apply your changes back
+```
+
+## Setup
+
+1. Rename the `include/config.template.h` file to `include/config.h` and fill your configuration.
+
+```bash
+mv include/config.template.h include/config.h
+```
+
+2. Fill the basic configuration in the `include/config.h` file.
 
 ```cpp
-#define SAT_NAME "satellite-1"
+#define SAT_NAME "sat-1"
+#define WIFI_SSID "your-wifi-ssid"
+#define WIFI_PASSWORD "your-wifi-password"
 #define MQTT_SERVER "test.mosquitto.org"
 ```
 
-3. Define your devices and sensors in the modules vector in the main.cpp file.
+3. Rename the `include/devices.template.h` file to `include/devices.h` and define your devices and sensors.
+
+```bash
+mv include/devices.template.h include/devices.h
+```
+
+1. Edit the vector `devices` in the `include/devices.h` file to insert your modules. See [Modules](#modules) to know how to do.
 
 ```cpp
-std::vector<Module*> modules = {
+std::vector<Module*> devices = {
   new AnalogOutputDAC("/lights", 33),
   new AnalogReader("/sun-tracer", 34),
   new Button("/light-switch", 35),

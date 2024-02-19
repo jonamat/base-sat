@@ -1,11 +1,5 @@
 #pragma once
 
-#include "../secrets.h"
-
-#define SAT_NAME "satellite-1"
-
-#define MQTT_SERVER "test.mosquitto.org"
-#define MQTT_PORT 1883
 #define MQTT_DEFAULT_QOS 0
 
 #define MSG_BUFFER_SIZE 50
