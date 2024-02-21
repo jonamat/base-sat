@@ -22,7 +22,7 @@ class AnalogOutputDAC : public Module
 {
 private:
   int pin;
-  uint8_t state; // 0 to 255
+  uint8_t state = 0; // 0 to 255
 
 public:
   AnalogOutputDAC(
@@ -38,15 +38,13 @@ public:
     check for esp32-s2
     */
 
-    if (pin != 25 || pin != 26) {
-      throw std::runtime_error("Pin " + std::to_string(pin) + " does is not provided with DAC. Cannot create AnalogOutput module on this pin. Please use pin 25 or 26.");
-    }
-
     this->topic = topic;
     this->pin = pin;
   }
 
-  void setup() {}
+  void setup() {
+    pinMode(this->pin, OUTPUT);
+  }
 
   void onCommand(String* payload) {
     if ((*payload).startsWith("SET")) {
@@ -58,7 +56,7 @@ public:
       }
 
       this->state = value;
-      dacWrite(this->pin, value);
+      dacWrite(this->pin, (uint8_t)value);
       mqttClient.publish(this->topic.c_str(), String(this->state).c_str());
     }
     else if ((*payload) == "STATE") {
@@ -66,12 +64,12 @@ public:
     }
     else if ((*payload) == "ON") {
       this->state = 255;
-      dacWrite(this->pin, 255);
+      dacWrite(this->pin, (uint8_t)255);
       mqttClient.publish(this->topic.c_str(), String(this->state).c_str());
     }
     else if ((*payload) == "OFF") {
       this->state = 0;
-      dacWrite(this->pin, 0);
+      dacWrite(this->pin, (uint8_t)0);
       mqttClient.publish(this->topic.c_str(), String(this->state).c_str());
     }
     else {
@@ -80,7 +78,12 @@ public:
   }
 
   BaseType_t start() {
-    dacWrite(this->pin, (int)this->state);
+    if (this->pin != 25 && this->pin != 26) {
+      mqttClient.publish((this->topic + "/error").c_str(), "AnalogOutputDAC: pin must be 25 or 26");
+      return pdFAIL;
+    }
+
+    dacWrite(this->pin, (uint8_t)this->state);
     return pdPASS;
   }
 };
