@@ -15,6 +15,8 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 AsyncElegantOtaClass ota;
 
+String last_status = "ALIVE";
+
 void setup(void) {
   Serial.begin(SERIAL_BAUD_RATE);
 
@@ -36,19 +38,13 @@ void setup(void) {
     BaseType_t status = devices[i]->start();
 
     if (status == pdPASS) {
-      char buf[255];
-      sprintf(buf, "Task %s started successfully", devices[i]->topic.c_str());
-      Serial.println(buf);
+      Serial.printf("Task %s started successfully\n", devices[i]->topic.c_str());
     }
     else {
-
-      // Blink the builtin LED to signal an error
-      while (true) {
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(300);
-        digitalWrite(LED_BUILTIN, LOW);
-        delay(300);
-      }
+      last_status = "ERROR";
+      String error = "Task " + devices[i]->topic + " failed to start";
+      Serial.println(error);
+      mqttClient.publish("sat/" SAT_NAME "/error", error.c_str());
     }
   }
 }
