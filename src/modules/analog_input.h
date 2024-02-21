@@ -41,6 +41,7 @@ public:
     int samples = 10,
     int delay_between_samples = 10
   ) {
+    this->topic = topic;
     this->pin = pin;
     this->delay = delay;
     this->tolerance = tolerance;
